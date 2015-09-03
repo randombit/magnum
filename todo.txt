@@ -1,0 +1,63 @@
+Configurable ports, listening IPs for server?
+
+Command line interface for cert generation
+
+DB schema: need crash/hang timestamps (for gui/reporting)
+
+TLS client cert auth, per instance certs
+
+AFL: should start a single master somewhere
+
+User logins
+Cost accounting of jobs
+Choosing which jobs to run based on price / cost metrics?
+AWS spot deployment
+ - Use User-Data field to pass client cert
+Web interface (static HTML/JS talking to server?)
+
+Split into components: common lib, maestro, fuzzball (compute node), cli, web
+
+cli talks to maestro \__> Both JSON-RPC over HTTPS?
+web talks to maestro /
+
+maestro spawns and talks to fuzzballs via HTTPS
+
+Dangerous to having a single process be web frontend and backend controller?
+Maybe better for them to share the sqlite db? Or share a DynamoDB?
+
+Generalize to other uses:
+  john
+  oclhashcat (GPU)
+
+Maybe allow the server to provide a script we run to setup?
+
+We can run only CPU many afl-fuzz, but we can combine that with some
+number of nmap/zmap scans, or GPU-based password cracking or ...
+
+Run the fuzzer in a contained environment - right now the fuzzed
+binary can attack us and steal our private key, or use a local exploit
+to gain root on the fuzzball.
+
+Have a simple static server for HTML, JS, binaries
+
+
+health checks on fuzzballs. if one is performing poorly (costs/execs)
+compared to others, shut it down
+
+Maximum # of machines per pool.
+
+Some way of handling a mix of 'free' client machines which can run
+continuously? and a pool of paid EC2 instances or whatev.
+
+For the rewrite: Use git as a backend for this whole thing via go
+bindings. Basically each job is a repo, check out the repo and run the
+binary there, periodically checkpoint your status to git and sync over
+ssh.
+
+Basically what libFuzzer has builtin just hardcoded for git with ssh
+key auth? Fuck libgit, just shell out to `git checkout`, `git pull` etc.
+
+Handle LLVM libFuzzer binaries. Bonus
+
+Handle upload of source to magnum, build AFL + libFuzzer binaries from
+a single LLVM style stub function? Bonus.

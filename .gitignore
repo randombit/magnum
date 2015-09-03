@@ -1,0 +1,6 @@
+magnum
+*.crt
+*.key
+*.pem
+*.db
+*~
